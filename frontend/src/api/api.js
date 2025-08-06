@@ -10,17 +10,9 @@ const API_BASE = process.env.REACT_APP_API_BASE_URL;
 export const loginUser = (email, password) =>
   axios.post(`${API_BASE}/auth/login`, { email, password });
 
-// export const registerUser = ({name, email, password, role }) =>
-//   axios.post(`${API_BASE}/auth/register`, { name, email, password, role});
+export const registerUser = ({name, email, password, role }) =>
+  axios.post(`${API_BASE}/auth/register`, { name, email, password, role});
 
-
-export const registerUser = async (userData) => {
-  return axios.post(
-    'https://excel-analytics-plateform-backend.onrender.com/auth/register',
-    userData,
-    { withCredentials: true }
-  );
-};
 
 
 export const adminLogin = (email, password) =>

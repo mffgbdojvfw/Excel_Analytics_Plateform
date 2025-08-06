@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 
-const API_BASE = 'http://localhost:5678/api'; // Make sure this matches your backend port
+const API_BASE = process.env.REACT_APP_API_BASE_URL;
 
 // -------------------- AUTH --------------------
 

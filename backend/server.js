@@ -72,7 +72,7 @@ connectDB();
 
 // Middleware
 app.use(cors({
-  origin: '*', // Replace with your frontend domain if needed
+  origin: 'https://your-frontend.vercel.app', // Replace with your frontend domain if needed
   credentials: true
 }));
 app.use(express.json());

@@ -1,0 +1,3 @@
+# Node modules (ignore everywhere)
+node_modules/
+**/node_modules/

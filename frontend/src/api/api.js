@@ -1,256 +1,145 @@
 
 
-// import axios from 'axios';
-
-// const API_BASE = process.env.REACT_APP_API_BASE_URL;
-
-// // -------------------- AUTH --------------------
-
-// export const loginUser = (email, password) =>
-//   axios.post(`${API_BASE}/auth/login`, { email, password });
-
-// export const registerUser = ({name, email, password, role }) =>
-//   axios.post(`${API_BASE}/auth/register`, { name, email, password, role});
-
-
-// export const adminLogin = (email, password) =>
-//   axios.post(`${API_BASE}/auth/admin-login`, { email, password });
-
-// // ✅ Admin Update Email/Password
-// export const updateAdminCredentials = (newEmail, newPassword, token) =>
-//   axios.patch(
-//     `${API_BASE}/auth/admin/update-credentials`,
-//     { newEmail, newPassword },
-//     {
-//       headers: { Authorization: `Bearer ${token}` },
-//     }
-//   );
-
-
-
-// // -------------------- USER: Upload + History --------------------
-
-// export const uploadExcelFile = (file, token) => {
-//   const formData = new FormData();
-//   formData.append('file', file);
-
-//   return axios.post(`${API_BASE}/uploads/excel`, formData, {
-//     headers: {
-//       Authorization: `Bearer ${token}`,
-//       'Content-Type': 'multipart/form-data',
-//     },
-//   });
-// };
-
-// export const getFileHistory = (token) =>
-//   axios.get(`${API_BASE}/uploads/history`, {
-//     headers: { Authorization: `Bearer ${token}` },
-//   });
-
-// export const getParsedDataById = (id, token) =>
-//   axios.get(`${API_BASE}/uploads/${id}/data`, {
-//     headers: { Authorization: `Bearer ${token}` },
-//   });
-
-// // -------------------- INSIGHT --------------------
-
-// export const generateInsight = (id, token) =>
-//   axios.post(`${API_BASE}/insights/${id}`, null, {
-//     headers: { Authorization: `Bearer ${token}` },
-//   });
-
-// // -------------------- ADMIN --------------------
-
-// export const getAllFilesAdmin = (token) =>
-//   axios.get(`${API_BASE}/admin/files`, {
-//     headers: { Authorization: `Bearer ${token}` },
-//   });
-
-// export const deleteFileAdmin = (id, token) =>
-//   axios.delete(`${API_BASE}/admin/files/${id}`, {
-//     headers: { Authorization: `Bearer ${token}` },
-//   });
-
-
-// // ✅ -------------------- NEW ADMIN APIs --------------------
-
-// // 1. Get All Users
-// export const getAllUsers = (token) =>
-//   axios.get(`${API_BASE}/admin/users`, {
-//     headers: { Authorization: `Bearer ${token}` },
-//   });
-
-
-// // // 2. Toggle User Status (active/inactive)
-// // export const toggleUserStatus = (id, token) =>
-// //   axios.patch(`${API_BASE}/admin/users/${id}/status`, null, {
-// //     headers: { Authorization: `Bearer ${token}` },
-// //   });
-
-// export const getUserUploadCounts = (token) =>
-//   axios.get(`${API_BASE}/admin/users/upload-counts`, {
-//     headers: { Authorization: `Bearer ${token}` },
-//   });
-
-
-// // 3. Get Insight Logs per User
-// export const getInsightUsageLogs = (token) =>
-//   axios.get(`${API_BASE}/admin/insights/logs`, {
-//     headers: { Authorization: `Bearer ${token}` },
-//   });
-
-// // 4. Get System Alerts
-// export const getSystemAlerts = (token) =>
-//   axios.get(`${API_BASE}/admin/system/alerts`, {
-//     headers: { Authorization: `Bearer ${token}` },
-//   });
-  
-// export const getBase64FileById = (id, token) =>
-//   axios.get(`${API_BASE}/uploads/${id}/base64`, {
-//     headers: { Authorization: `Bearer ${token}` },
-//   });  
-
-
-// export const getUserSignupStats = (token) =>
-// axios.get(`${API_BASE}/admin/users/stats`, {
-//   headers: { Authorization: `Bearer ${token}` },
-//   });
-
-
-
-// export const uploadProfileImage = (file, token) => {
-//   const formData = new FormData();
-//   formData.append('image', file);
-
-//   return axios.patch(`${API_BASE}/auth/update-profile-image`, formData, {
-//     headers: {
-//       Authorization: `Bearer ${token}`,
-//       'Content-Type': 'multipart/form-data',
-//     },
-//   });
-// };
-
-
-// export const deleteProfileImage = (token) => {
-//   return axios.delete(`${API_BASE}/auth/delete-profile`, {
-//     headers: { Authorization: `Bearer ${token}` }
-//   });
-// };
-
-
-// export const deleteUserFile = (id, token) =>
-//   axios.delete(`${API_BASE}/uploads/history/${id}`, {
-//     headers: { Authorization: `Bearer ${token}` },
-//   });
-
-
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { loginUser, registerUser } from "../apis/api";
-
-const AuthContext = createContext();
-
-export const useAuth = () => useContext(AuthContext);
+import axios from 'axios';
 
 const API_BASE = process.env.REACT_APP_API_BASE_URL;
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem("user");
-    return savedUser ? JSON.parse(savedUser) : null;
-  });
-  const [token, setToken] = useState(() => localStorage.getItem("token") || null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
 
-  const fixUserImage = (user) => {
-    if (user?.profileImage && !user.profileImage.startsWith("http")) {
-      return {
-        ...user,
-        profileImage: `${API_BASE}${user.profileImage}`,
-      };
+// -------------------- AUTH --------------------
+
+export const loginUser = (email, password) =>
+  axios.post(`${API_BASE}/auth/login`, { email, password });
+
+export const registerUser = ({name, email, password, role }) =>
+  axios.post(`${API_BASE}/auth/register`, { name, email, password, role});
+
+
+export const adminLogin = (email, password) =>
+  axios.post(`${API_BASE}/auth/admin-login`, { email, password });
+
+// ✅ Admin Update Email/Password
+export const updateAdminCredentials = (newEmail, newPassword, token) =>
+  axios.patch(
+    `${API_BASE}/auth/admin/update-credentials`,
+    { newEmail, newPassword },
+    {
+      headers: { Authorization: `Bearer ${token}` },
     }
-    return user;
-  };
-
-  const login = async (email, password) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await loginUser(email, password);
-      const { token, user } = response;
-      if (user.profileImage && !user.profileImage.startsWith("http")) {
-        user.profileImage = `${API_BASE}${user.profileImage}`;
-      }
-      setUser(user);
-      setToken(token);
-      localStorage.setItem("user", JSON.stringify(user));
-      localStorage.setItem("token", token);
-    } catch (err) {
-      console.error("Login failed:", err);
-      setError(err.response?.data?.message || "Login failed");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const register = async (formData) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await registerUser(formData);
-      const { token, user } = response;
-      if (user.profileImage && !user.profileImage.startsWith("http")) {
-        user.profileImage = `${API_BASE}${user.profileImage}`;
-      }
-      setUser(user);
-      setToken(token);
-      localStorage.setItem("user", JSON.stringify(user));
-      localStorage.setItem("token", token);
-    } catch (err) {
-      console.error("Registration failed:", err);
-      setError(err.response?.data?.message || "Registration failed");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const logout = () => {
-    setUser(null);
-    setToken(null);
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-  };
-
-  const updateUser = (updatedUser) => {
-    let updated = updatedUser;
-    if (updated.profileImage && !updated.profileImage.startsWith("http")) {
-      updated.profileImage = `${API_BASE}${updated.profileImage}`;
-    }
-    setUser(updated);
-    localStorage.setItem("user", JSON.stringify(updated));
-  };
-
-  useEffect(() => {
-    if (user) {
-      setUser(fixUserImage(user));
-    }
-  }, []);
-
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        token,
-        login,
-        register,
-        logout,
-        loading,
-        error,
-        updateUser,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
   );
+
+
+
+// -------------------- USER: Upload + History --------------------
+
+export const uploadExcelFile = (file, token) => {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  return axios.post(`${API_BASE}/uploads/excel`, formData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data',
+    },
+  });
 };
 
+export const getFileHistory = (token) =>
+  axios.get(`${API_BASE}/uploads/history`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+export const getParsedDataById = (id, token) =>
+  axios.get(`${API_BASE}/uploads/${id}/data`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+// -------------------- INSIGHT --------------------
+
+export const generateInsight = (id, token) =>
+  axios.post(`${API_BASE}/insights/${id}`, null, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+// -------------------- ADMIN --------------------
+
+export const getAllFilesAdmin = (token) =>
+  axios.get(`${API_BASE}/admin/files`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+export const deleteFileAdmin = (id, token) =>
+  axios.delete(`${API_BASE}/admin/files/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+
+// ✅ -------------------- NEW ADMIN APIs --------------------
+
+// 1. Get All Users
+export const getAllUsers = (token) =>
+  axios.get(`${API_BASE}/admin/users`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+
+// // 2. Toggle User Status (active/inactive)
+// export const toggleUserStatus = (id, token) =>
+//   axios.patch(`${API_BASE}/admin/users/${id}/status`, null, {
+//     headers: { Authorization: `Bearer ${token}` },
+//   });
+
+export const getUserUploadCounts = (token) =>
+  axios.get(`${API_BASE}/admin/users/upload-counts`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+
+// 3. Get Insight Logs per User
+export const getInsightUsageLogs = (token) =>
+  axios.get(`${API_BASE}/admin/insights/logs`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+// 4. Get System Alerts
+export const getSystemAlerts = (token) =>
+  axios.get(`${API_BASE}/admin/system/alerts`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  
+export const getBase64FileById = (id, token) =>
+  axios.get(`${API_BASE}/uploads/${id}/base64`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });  
+
+
+export const getUserSignupStats = (token) =>
+axios.get(`${API_BASE}/admin/users/stats`, {
+  headers: { Authorization: `Bearer ${token}` },
+  });
+
+
+
+export const uploadProfileImage = (file, token) => {
+  const formData = new FormData();
+  formData.append('image', file);
+
+  return axios.patch(`${API_BASE}/auth/update-profile-image`, formData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+};
+
+
+export const deleteProfileImage = (token) => {
+  return axios.delete(`${API_BASE}/auth/delete-profile`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+};
+
+
+export const deleteUserFile = (id, token) =>
+  axios.delete(`${API_BASE}/uploads/history/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });

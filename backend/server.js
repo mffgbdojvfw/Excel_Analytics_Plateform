@@ -72,7 +72,11 @@ connectDB();
 
 // Middleware
 app.use(cors({
-  origin: 'https://excel-analytics-plateform.vercel.app', // Replace with your frontend domain if needed
+  origin: [
+  'https://excel-analytics-plateform.vercel.app',
+  'https://excel-analytics-plateform-dx4xx9m1s.vercel.app',
+],
+ // Replace with your frontend domain if needed
   credentials: true
 }));
 app.use(express.json());

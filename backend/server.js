@@ -70,20 +70,14 @@ const app = express();
 // Connect to MongoDB
 connectDB();
 
-const allowedOrigins = ['https://excel-analytics-plateform.vercel.app'];
+const corsOptions = {
+  origin: ['https://excel-analytics-plateform.vercel.app'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true,
+};
 
-app.use(cors({
-    origin: function (origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}));
+app.use(cors(corsOptions));
+
 
 
  // Replace with your frontend domain if needed

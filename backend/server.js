@@ -92,6 +92,12 @@ app.use('/api/uploads', uploadRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/insights', insightRoutes);
 
+
+app.get('/', (req, res) => {
+  res.send('Excel Analytics Platform API is running.');
+});
+
+
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

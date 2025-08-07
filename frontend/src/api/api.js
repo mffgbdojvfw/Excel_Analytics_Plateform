@@ -150,20 +150,21 @@
 
 
 
+
 import axios from 'axios';
 
-const API_BASE = process.env.REACT_APP_API_BASE_URL || 'https://excel-analytics-plateform-backend.onrender.com/api';
+const API_BASE = process.env.REACT_APP_API_BASE_URL || 'https://excel-analytics-plateform-backend.onrender.com';
 
 // -------------------- AUTH --------------------
 
 export const loginUser = (email, password) =>
-  axios.post(`${API_BASE}/api/auth/login`, { email, password }, { withCredentials: true });
+  axios.post(`${API_BASE}/api/auth/login`, { email, password });
 
 export const registerUser = async (userData) =>
-  axios.post(`${API_BASE}/api/auth/register`, userData, { withCredentials: true });
+  axios.post(`${API_BASE}/api/auth/register`, userData);
 
 export const adminLogin = (email, password) =>
-  axios.post(`${API_BASE}/api/auth/admin-login`, { email, password }, { withCredentials: true });
+  axios.post(`${API_BASE}/api/auth/admin-login`, { email, password });
 
 export const updateAdminCredentials = (newEmail, newPassword, token) =>
   axios.patch(
@@ -268,4 +269,3 @@ export const deleteUserFile = (id, token) =>
   axios.delete(`${API_BASE}/uploads/history/${id}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
-

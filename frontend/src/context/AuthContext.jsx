@@ -113,112 +113,209 @@
 
 
 
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { loginUser, registerUser } from "../api/api";
+// import React, { createContext, useContext, useEffect, useState } from "react";
+// import { loginUser, registerUser } from "../api/api";
+
+// const AuthContext = createContext();
+
+// export const useAuth = () => useContext(AuthContext);
+
+// const API_BASE = process.env.REACT_APP_API_BASE_URL;
+
+// export const AuthProvider = ({ children }) => {
+//   const [user, setUser] = useState(() => {
+//     const savedUser = localStorage.getItem("user");
+//     return savedUser ? JSON.parse(savedUser) : null;
+//   });
+//   const [token, setToken] = useState(() => localStorage.getItem("token") || null);
+//   const [loading, setLoading] = useState(false);
+//   const [error, setError] = useState(null);
+
+//   const fixUserImage = (user) => {
+//     if (user?.profileImage && !user.profileImage.startsWith("http")) {
+//       return {
+//         ...user,
+//         profileImage: `${API_BASE}${user.profileImage}`,
+//       };
+//     }
+//     return user;
+//   };
+
+//   const login = async (email, password) => {
+//     setLoading(true);
+//     setError(null);
+//     try {
+//       const response = await loginUser(email, password);
+//       const { token, user } = response;
+//       if (user.profileImage && !user.profileImage.startsWith("http")) {
+//         user.profileImage = `${API_BASE}${user.profileImage}`;
+//       }
+//       setUser(user);
+//       setToken(token);
+//       localStorage.setItem("user", JSON.stringify(user));
+//       localStorage.setItem("token", token);
+//     } catch (err) {
+//       console.error("Login failed:", err);
+//       setError(err.response?.data?.message || "Login failed");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   const register = async (formData) => {
+//     setLoading(true);
+//     setError(null);
+//     try {
+//       const response = await registerUser(formData);
+//       const { token, user } = response;
+//       if (user.profileImage && !user.profileImage.startsWith("http")) {
+//         user.profileImage = `${API_BASE}${user.profileImage}`;
+//       }
+//       setUser(user);
+//       setToken(token);
+//       localStorage.setItem("user", JSON.stringify(user));
+//       localStorage.setItem("token", token);
+//     } catch (err) {
+//       console.error("Registration failed:", err);
+//       setError(err.response?.data?.message || "Registration failed");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   const logout = () => {
+//     setUser(null);
+//     setToken(null);
+//     localStorage.removeItem("user");
+//     localStorage.removeItem("token");
+//   };
+
+//   const updateUser = (updatedUser) => {
+//     let updated = updatedUser;
+//     if (updated.profileImage && !updated.profileImage.startsWith("http")) {
+//       updated.profileImage = `${API_BASE}${updated.profileImage}`;
+//     }
+//     setUser(updated);
+//     localStorage.setItem("user", JSON.stringify(updated));
+//   };
+
+//   useEffect(() => {
+//     if (user) {
+//       setUser(fixUserImage(user));
+//     }
+//   }, []);
+
+//   return (
+//     <AuthContext.Provider
+//       value={{
+//         user,
+//         token,
+//         login,
+//         register,
+//         logout,
+//         loading,
+//         error,
+//         updateUser,
+//       }}
+//     >
+//       {children}
+//     </AuthContext.Provider>
+//   );
+// };
+
+
+
+
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import {
+  loginUser,
+  registerUser,
+} from '../apis/api'; // Import all your API functions here
 
 const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);
 
-const API_BASE = process.env.REACT_APP_API_BASE_URL;
+// Fix image URL for profile
+const fixUserImage = (user) => {
+  if (user?.profileImage && !user.profileImage.startsWith('http')) {
+    return {
+      ...user,
+      profileImage: `https://excel-analytics-plateform-backend.onrender.com${user.profileImage}`,
+    };
+  }
+  return user;
+};
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem("user");
-    return savedUser ? JSON.parse(savedUser) : null;
+    const storedUser = localStorage.getItem('user');
+    return storedUser ? fixUserImage(JSON.parse(storedUser)) : null;
   });
-  const [token, setToken] = useState(() => localStorage.getItem("token") || null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
 
-  const fixUserImage = (user) => {
-    if (user?.profileImage && !user.profileImage.startsWith("http")) {
-      return {
-        ...user,
-        profileImage: `${API_BASE}${user.profileImage}`,
-      };
-    }
-    return user;
-  };
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const login = async (email, password) => {
     setLoading(true);
-    setError(null);
+    setError('');
     try {
-      const response = await loginUser(email, password);
-      const { token, user } = response;
-      if (user.profileImage && !user.profileImage.startsWith("http")) {
-        user.profileImage = `${API_BASE}${user.profileImage}`;
-      }
-      setUser(user);
-      setToken(token);
-      localStorage.setItem("user", JSON.stringify(user));
-      localStorage.setItem("token", token);
+      const res = await loginUser(email, password);
+      const fixedUser = fixUserImage(res.data.user);
+      setUser(fixedUser);
+      localStorage.setItem('user', JSON.stringify(fixedUser));
     } catch (err) {
-      console.error("Login failed:", err);
-      setError(err.response?.data?.message || "Login failed");
+      console.error('Login failed:', err);
+      setError(
+        err?.response?.data?.message || 'Login failed. Please try again.'
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  const register = async (formData) => {
+  const register = async (userData) => {
     setLoading(true);
-    setError(null);
+    setError('');
     try {
-      const response = await registerUser(formData);
-      const { token, user } = response;
-      if (user.profileImage && !user.profileImage.startsWith("http")) {
-        user.profileImage = `${API_BASE}${user.profileImage}`;
-      }
-      setUser(user);
-      setToken(token);
-      localStorage.setItem("user", JSON.stringify(user));
-      localStorage.setItem("token", token);
+      const res = await registerUser(userData);
+      const fixedUser = fixUserImage(res.data.user);
+      setUser(fixedUser);
+      localStorage.setItem('user', JSON.stringify(fixedUser));
     } catch (err) {
-      console.error("Registration failed:", err);
-      setError(err.response?.data?.message || "Registration failed");
+      console.error('Registration failed:', err);
+      setError(
+        err?.response?.data?.message ||
+          'Registration failed. Please try again.'
+      );
     } finally {
       setLoading(false);
     }
   };
 
   const logout = () => {
+    localStorage.removeItem('user');
     setUser(null);
-    setToken(null);
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-  };
-
-  const updateUser = (updatedUser) => {
-    let updated = updatedUser;
-    if (updated.profileImage && !updated.profileImage.startsWith("http")) {
-      updated.profileImage = `${API_BASE}${updated.profileImage}`;
-    }
-    setUser(updated);
-    localStorage.setItem("user", JSON.stringify(updated));
   };
 
   useEffect(() => {
-    if (user) {
-      setUser(fixUserImage(user));
-    }
+    // Optional: auto-refresh session logic
   }, []);
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        token,
+        loading,
+        error,
         login,
         register,
         logout,
-        loading,
-        error,
-        updateUser,
+        setError,
       }}
     >
       {children}
     </AuthContext.Provider>
   );
 };
+

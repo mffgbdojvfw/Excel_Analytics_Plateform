@@ -230,7 +230,7 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import {
   loginUser,
   registerUser,
-} from '../apis/api'; // Import all your API functions here
+} from '../api/api'; // Import all your API functions here
 
 const AuthContext = createContext();
 

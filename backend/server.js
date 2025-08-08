@@ -70,13 +70,11 @@ const app = express();
 // Connect to MongoDB
 connectDB();
 
-const corsOptions = {
-  origin: ['https://excel-analytics-plateform.vercel.app'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true,
-};
 
-app.use(cors(corsOptions));
+app.use(cors({
+  origin: "https://excel-analytics-plateform-frontend.onrender.com",
+  credentials: true,
+}));
 
 
 

@@ -83,52 +83,49 @@ const Sidebar = () => {
         </h2>
 
         {/* 🔗 Navigation Links */}
-        <nav className="flex flex-col gap-3 flex-grow">
-          {navLinks.map(({ to, label, icon: Icon, roles }) =>
-            roles.includes(user?.role) ? (
-              <NavLink
-                key={to}
-                to={to}
-                className={({ isActive }) => linkStyle(isActive)}
-                onClick={() => setMobileOpen(false)} // close on click
-              >
-                <div className="flex items-center gap-3 relative">
-                  <Icon size={20} className="text-cyan-400" />
-                  {!collapsed && <span>{label}</span>}
-                  {collapsed && (
-                    <span className="absolute left-12 bg-black px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 z-50">
-                      {label}
-                    </span>
-                  )}
-                </div>
-                {location.pathname === to && (
-                  <span className="absolute left-0 top-0 h-full w-1 bg-sky-400 rounded-r-md animate-pulse" />
-                )}
-              </NavLink>
-            ) : null
+<nav className="flex flex-col gap-3">
+  {navLinks.map(({ to, label, icon: Icon, roles }) =>
+    roles.includes(user?.role) ? (
+      <NavLink
+        key={to}
+        to={to}
+        className={({ isActive }) => linkStyle(isActive)}
+        onClick={() => setMobileOpen(false)} // close on click
+      >
+        <div className="flex items-center gap-3 relative">
+          <Icon size={20} className="text-cyan-400" />
+          {!collapsed && <span>{label}</span>}
+          {collapsed && (
+            <span className="absolute left-12 bg-black px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 z-50">
+              {label}
+            </span>
           )}
-        </nav>
-
-        {/* ⚙️ Footer Actions */}
-        <div className="space-y-2 mt-6">
-          <button
-            onClick={logout}
-            className="w-full flex items-center gap-2 px-4 py-2 text-red-400 hover:text-red-300 hover:bg-red-900/30 rounded-lg transition duration-300 text-sm"
-          >
-            <LogOut size={20} /> {!collapsed && 'Logout'}
-          </button>
-
-          {/* Desktop Collapse Toggle */}
-         {/* Collapse Toggle - Always visible */}
-<button
-  onClick={toggleSidebar}
-  className="w-full px-3 py-2 bg-slate-800/40 text-white rounded-md text-xs hover:bg-slate-700 transition"
->
-  {collapsed ? '▶ Expand Sidebar' : '◀ Collapse Sidebar'}
-</button>
-
-
         </div>
+        {location.pathname === to && (
+          <span className="absolute left-0 top-0 h-full w-1 bg-sky-400 rounded-r-md animate-pulse" />
+        )}
+      </NavLink>
+    ) : null
+  )}
+</nav>
+
+{/* ⚙️ Footer Actions — moved right under nav */}
+<div className="mt-4 space-y-2">
+  <button
+    onClick={logout}
+    className="w-full flex items-center gap-2 px-4 py-2 text-red-400 hover:text-red-300 hover:bg-red-900/30 rounded-lg transition duration-300 text-sm"
+  >
+    <LogOut size={20} /> {!collapsed && 'Logout'}
+  </button>
+
+  <button
+    onClick={toggleSidebar}
+    className="w-full px-3 py-2 bg-slate-800/40 text-white rounded-md text-xs hover:bg-slate-700 transition"
+  >
+    {collapsed ? '▶ Expand Sidebar' : '◀ Collapse Sidebar'}
+  </button>
+</div>
+
       </aside>
     </>
   );

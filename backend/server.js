@@ -77,10 +77,6 @@ app.use(cors({
 }));
 
 
-
- // Replace with your frontend domain if needed
-  credentials: true
-}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
